@@ -1,0 +1,44 @@
+iBoot Payload Development Toolkit
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+
+iPhone 3GS 3.1.2 (iBoot-636.66):
+================================
+
+    make [TARGET=iPhone2,1/7D11/iBoot]
+
+Two files will be created:
+    hooker - pwns iBoot on the fly and creates a new command: "pwn"
+    payload - the handler for the newly created command
+
+We can and must use hooker, because this particular iBoot is vulnerable
+to the usb_control_msg(0x21, 2) exploit.  Otherwise, we would have to have
+a pwned iBoot already on device.
+
+A few numbers about iPhone2,1/7D11/iBoot:
+    iBoot Address: 0x4FF00000 => 0x0
+    IRQ vector: 0x4FF00038 => 0x38 (gets executed, eventually)
+    Load Address: 0x41000000
+    USB Exploit: copies 0x2000 bytes from 0x41000000 to 0x0
+    Commands: table of { "name", handler, "description" }
+
+In order to keep things simple, we will stash both hooker and payload into the
+same iBoot image.  The small hooker occupies a region of zeroes between 0xE0
+and 0x200, so it is rebased to 0x4FF00000 + 0xE0.  Because of the USB exploit,
+and because we want iBoot to live, payload is rebased to 0x41000000 + 0x2000.
+
+Create iBoot image:
+    xpwntool iBoot.n88ap.RELEASE.img3 iboot -iv IV -k KEY
+    dd if=iboot of=ibex bs=$[0x2000] count=1
+    echo -n -e "\xE0\x00\xF0\x4F" | dd of=ibex bs=1 seek=$[0x38] conv=notrunc
+    dd if=hooker of=ibex bs=1 seek=$[0xE0] conv=notrunc
+    cat payload >> ibex
+
+Now play with it:
+    Put device in Recovery mode.
+    ./irecovery -s
+    iRecovery> /exploit ibex
+    iRecovery> pwn
