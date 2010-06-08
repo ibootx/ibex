@@ -26,10 +26,6 @@ OUTPUT_ARCH(arm)
 STARTUP(entry.o)
 ENTRY(_start)
 SECTIONS {
-    /*
-    . = 0x41000000;
-    */
-
     .text : {
 	*(.text)
     }
