@@ -31,7 +31,7 @@
 .set ptr_cmd_list, 0x4FF19970
 .set ptr_cmd_list_end, 0x4FF19974
 #else
-.set reset_cmd_nameptr, 0x4FF21A04
+.set reset_cmd_nameadr, 0x4FF21A04
 .set reset_cmd_handler, 0x4FF26EE8
 #endif
 
@@ -72,7 +72,7 @@ _start:
 #else
 	@ replace reset command with pwn, set handler to payload_addr
 	ldr	r1, =0x6E7770
-	ldr	r0, =reset_cmd_nameptr
+	ldr	r0, =reset_cmd_nameadr
 	str	r1, [r0]
 	ldr	r1, =payload_addr
 	ldr	r0, =reset_cmd_handler
