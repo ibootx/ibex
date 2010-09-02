@@ -42,3 +42,43 @@ Now play with it:
     ./irecovery -s
     iRecovery> /exploit ibex
     iRecovery> pwn
+
+
+iPhone 3GS 4.0GM (iBoot-889.24):
+================================
+
+    make TARGET=iPhone2,1/8A293/iBoot
+
+One file will be created:
+    payload - file to be executed by some already existing "pwn" command
+
+We cannot use runtime hooker, as no exploits are available for this target,
+yet.  In order to add "pwn" command, the iBoot must already be patched before
+it is flashed to the device (see hooker.S for reference).  To do this, either
+modify PwnageTool iBoot hacks, or perform a NOR-only flash afterwards.
+
+Now play with it:
+    Put device in Recovery mode.
+    ./irecovery -s
+    iRecovery> /upload payload
+    iRecovery> pwn
+
+
+iPhone 3GS 4.1GM (iBoot-931.18.27):
+===================================
+
+    make TARGET=iPhone2,1/8B117/iBoot
+
+One file will be created:
+    payload - file to be executed by some already existing "pwn" command
+
+We cannot use runtime hooker, as no exploits are available for this target,
+yet.  In order to add "pwn" command, the iBoot must already be patched before
+it is flashed to the device (see hooker.S for reference).  To do this, either
+modify PwnageTool iBoot hacks, or perform a NOR-only flash afterwards.
+
+Now play with it:
+    Put device in Recovery mode.
+    ./irecovery -s
+    iRecovery> /upload payload
+    iRecovery> pwn
